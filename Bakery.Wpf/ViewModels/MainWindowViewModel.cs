@@ -1,10 +1,13 @@
 ﻿using Bakery.Core.DTOs;
 using Bakery.Persistence;
 using Bakery.Wpf.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Bakery.Wpf.ViewModels
 {
@@ -12,6 +15,8 @@ namespace Bakery.Wpf.ViewModels
     {
 
         private ObservableCollection<ProductDto> _products;
+        private string _priceFrom;
+        private string _priceTo;
 
         public ObservableCollection<ProductDto> Products
         {
@@ -20,10 +25,48 @@ namespace Bakery.Wpf.ViewModels
             {
                 _products = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(AvgPriceOfProducts));
             }
         }
 
+        public string PriceFrom
+        {
+            get => _priceFrom;
+            set 
+            { 
+                _priceFrom = value;
+                ValidateViewModelProperties();
+            }
+        }
 
+        public string PriceTo
+        {
+            get => _priceTo;
+            set 
+            { 
+                _priceTo = value;
+                ValidateViewModelProperties();
+            }
+        }
+
+        public double AvgPriceOfProducts
+        {
+            get
+            {
+                if (Products == null)
+                    return 0;
+                if (Products.Count == 0)
+                    return 0;
+
+                return Math.Round((Products.Sum(p => p.Price) / Products.Count),2);
+            }
+        }
+
+        public ProductDto SelectedProduct { get; set; }
+
+        public ICommand CmdFilter { get; set; }
+        public ICommand CmdNewProduct { get; set; }
+        public ICommand CmdEditProduct { get; set; }
 
         public MainWindowViewModel(IWindowController controller) : base(controller)
         {
@@ -33,9 +76,26 @@ namespace Bakery.Wpf.ViewModels
 
         private void LoadCommands()
         {
-
+            CmdFilter = new RelayCommand(async _ => await LoadProducts(), _ => IsValid);
+            CmdNewProduct = new RelayCommand(async _ => await ÊditCreateProduct(), _ => true);
+            CmdEditProduct = new RelayCommand(async _ => await ÊditCreateProduct(), _ => SelectedProduct != null);
         }
 
+        private async Task ÊditCreateProduct()
+        {
+            var window = new EditCreateProductViewModel(Controller, SelectedProduct);
+            Controller.ShowWindow(window, true);
+
+            var selectedProduct = SelectedProduct;
+            await LoadProducts();
+
+            if (selectedProduct != null)
+            {
+                SelectedProduct = Products.FirstOrDefault(p => p.Id == selectedProduct.Id);
+                OnPropertyChanged(nameof(SelectedProduct));
+            }
+
+        }
 
         public static async Task<MainWindowViewModel> Create(IWindowController controller)
         {
@@ -55,14 +115,26 @@ namespace Bakery.Wpf.ViewModels
         {
             await using UnitOfWork uow = new UnitOfWork();
 
-            //var products = uow.Products.Get
-            Products = new ObservableCollection<ProductDto>();
+            double priceFrom = 0;
+            double priceTo = 0;
 
+            double.TryParse(PriceFrom, out priceFrom);
+            double.TryParse(PriceTo, out priceTo);
+
+            var products = await uow.Products.GetWithFilterAsync(priceFrom, priceTo);
+            Products = new ObservableCollection<ProductDto>(products);
         }
 
         public override IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
-            yield return ValidationResult.Success;
+            if (!string.IsNullOrWhiteSpace(PriceFrom) && !double.TryParse(PriceFrom, out var dummy))
+            {
+                yield return new ValidationResult("Input is no valid price", new string[] { nameof(PriceFrom) });
+            }
+            if (!string.IsNullOrWhiteSpace(PriceTo) && !double.TryParse(PriceTo, out dummy))
+            {
+                yield return new ValidationResult("Input is no valid price", new string[] { nameof(PriceTo) });
+            }
         }
     }
 }

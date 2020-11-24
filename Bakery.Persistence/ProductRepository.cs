@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bakery.Persistence
 {
-  public class ProductRepository : IProductRepository
+    public class ProductRepository : IProductRepository
     {
         private readonly ApplicationDbContext _dbContext;
 
@@ -25,6 +25,22 @@ namespace Bakery.Persistence
         public async Task AddRangeAsync(IEnumerable<Product> products)
         {
             await _dbContext.Products.AddRangeAsync(products);
+        }
+
+        public async Task<IEnumerable<ProductDto>> GetWithFilterAsync(double priceFrom, double priceTo)
+        {
+            var query = _dbContext.Products.Where(p => p.Price >= priceFrom)
+                .AsQueryable();
+
+            if (priceTo > 0)
+            {
+                query = query.Where(p => p.Price <= priceTo);
+            }
+
+            return await query
+                .Include(p => p.OrderItems)
+                .Select(p => new ProductDto(p))
+                .ToArrayAsync();
         }
     }
 }

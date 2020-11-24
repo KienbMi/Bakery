@@ -42,5 +42,11 @@ namespace Bakery.Persistence
                 .Select(p => new ProductDto(p))
                 .ToArrayAsync();
         }
+
+        public void Add(Product product)
+            => _dbContext.Products.Add(product);
+
+        public async Task<Product> GetByIdAsync(int productId)
+            => await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == productId);
     }
 }

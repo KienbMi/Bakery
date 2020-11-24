@@ -78,12 +78,12 @@ namespace Bakery.Wpf.ViewModels
         {
             CmdFilter = new RelayCommand(async _ => await LoadProducts(), _ => IsValid);
             CmdNewProduct = new RelayCommand(async _ => await ÊditCreateProduct(), _ => true);
-            CmdEditProduct = new RelayCommand(async _ => await ÊditCreateProduct(), _ => SelectedProduct != null);
+            CmdEditProduct = new RelayCommand(async _ => await ÊditCreateProduct(SelectedProduct), _ => SelectedProduct != null);
         }
 
-        private async Task ÊditCreateProduct()
+        private async Task ÊditCreateProduct(ProductDto product = null)
         {
-            var window = new EditCreateProductViewModel(Controller, SelectedProduct);
+            var window = new EditCreateProductViewModel(Controller, product);
             Controller.ShowWindow(window, true);
 
             var selectedProduct = SelectedProduct;

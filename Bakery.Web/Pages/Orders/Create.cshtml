@@ -1,7 +1,7 @@
 ﻿@page
 @model CreateModel
 @{
-  ViewData["Title"] = "Bestellung anlegen";
+    ViewData["Title"] = "Bestellung anlegen";
 }
 
 <h1>Neue Bestellung anlegen</h1>
@@ -9,37 +9,34 @@
 <h4>Bestellung</h4>
 <hr />
 <div class="row">
-  <div class="col-md-4">
-    <form method="post">
-      <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-      <div class="form-group">
-        
-
-
-        
-      </div>
-      <div class="form-group">
-        
-
-
-      </div>
-      <div class="form-group">
-        
-
-
-      </div>
-
-      <div class="form-group">
-        <input type="submit" value="Speichern" class="btn btn-primary" />
-      </div>
-    </form>
-  </div>
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.Order.OrderNr" class="control-label">Bestellnummer</label>
+                <input asp-for="@Model.Order.OrderNr" class="form-control"/>
+                <span asp-validation-for="@Model.Order.OrderNr" class="text-danger"/>
+            </div>
+            <div class="form-group">
+                <label asp-for="@Model.Order.Date" class="control-label">Datum</label>
+                <input asp-for="@Model.Order.Date" class="form-control" type="date" />
+                <span asp-validation-for="@Model.Order.Date" class="text-danger" />
+            </div>
+            <div class="form-group">          
+                <label asp-for="@Model.CustomerId" class="control-label">Kunde</label>
+                <select asp-for="@Model.CustomerId" class="form-control" asp-items="@Model.Customers"></select>              
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Speichern" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
 </div>
 
 <div>
-  <a asp-page="../Index">Zurück</a>
+    <a asp-page="../Index">Zurück</a>
 </div>
 
 @section Scripts {
-  @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

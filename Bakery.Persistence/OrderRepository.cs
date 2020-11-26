@@ -1,5 +1,6 @@
 ﻿using Bakery.Core.Contracts;
 using Bakery.Core.DTOs;
+using Bakery.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,5 +34,8 @@ namespace Bakery.Persistence
         {
             return await _dbContext.Orders.CountAsync();
         }
+
+        public void Add(Order order)
+            => _dbContext.Orders.Add(order);        
     }
 }

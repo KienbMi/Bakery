@@ -62,6 +62,13 @@ namespace Bakery.Persistence
                     throw new ValidationException($"Produkt mit dem Namen {product.Name} existiert bereits.");
                 }
             }
+            if (entity is Order order)
+            {
+                if (await _dbContext.Orders.AnyAsync(o => o.Id != order.Id && o.OrderNr == order.OrderNr))
+                {
+                    throw new ValidationException($"Bestellung mit Nummer {order.OrderNr} existiert bereits.");
+                }
+            }
         }
 
         public async Task DeleteDatabaseAsync() => await _dbContext.Database.EnsureDeletedAsync();

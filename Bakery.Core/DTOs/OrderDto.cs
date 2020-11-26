@@ -8,6 +8,7 @@ namespace Bakery.Core.DTOs
     {
         public int OrderId { get; set; }
 
+        [Required(ErrorMessage = "Bestellnummer darf nicht leer sein!")]
         public string OrderNr { get; set; }
         [Display(Name = "Datum")]
         [DisplayFormat(DataFormatString = "{0:dd.MM.yyyy}",

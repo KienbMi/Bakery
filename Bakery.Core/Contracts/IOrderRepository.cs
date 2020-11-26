@@ -14,5 +14,6 @@ namespace Bakery.Core.Contracts
         Task<OrderWithItemsDto> GetByIdWithItemsAsync(int orderId);
         Task<Order> GetByIdAsync(int orderId);
         void Remove(Order orderInDb);
+        Task<IEnumerable<OrderWithItemsDto>> GetAllWithItemsAsync();
     }
 }

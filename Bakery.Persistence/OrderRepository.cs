@@ -53,5 +53,13 @@ namespace Bakery.Persistence
 
         public void Remove(Order orderInDb)
             => _dbContext.Orders.Remove(orderInDb);
+
+        public async Task<IEnumerable<OrderWithItemsDto>> GetAllWithItemsAsync()
+            => await _dbContext.Orders
+                    .Include(o => o.Customer)
+                    .Include(o => o.OrderItems)
+                    .Include("OrderItems.Product")
+                    .Select(o => new OrderWithItemsDto(o))
+                    .ToArrayAsync();
     }
 }

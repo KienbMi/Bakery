@@ -36,6 +36,15 @@ namespace Bakery.Persistence
         }
 
         public void Add(Order order)
-            => _dbContext.Orders.Add(order);        
+            => _dbContext.Orders.Add(order);
+
+        public async Task<OrderWithItemsDto> GetByIdWithItemsAsync(int orderId)
+            => await _dbContext.Orders
+                    .Include(o => o.Customer)
+                    .Include(o => o.OrderItems)
+                    .Include("OrderItems.Product")
+                    .Where(o => o.Id == orderId)
+                    .Select(o => new OrderWithItemsDto(o))
+                    .SingleOrDefaultAsync();
     }
 }

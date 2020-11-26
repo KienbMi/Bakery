@@ -1,9 +1,12 @@
-﻿using System.Threading.Tasks;
+﻿using Bakery.Core.Entities;
+using System.Threading.Tasks;
 
 namespace Bakery.Core.Contracts
 {
-  public interface IOrderItemRepository
-  {
-    Task<int> GetCountAsync();
-  }
+    public interface IOrderItemRepository
+    {
+        Task<int> GetCountAsync();
+        Task<OrderItem> GetByIdAsync(int itemId);
+        void Remove(OrderItem orderItem);
+    }
 }

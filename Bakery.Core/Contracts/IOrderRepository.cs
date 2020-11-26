@@ -11,5 +11,6 @@ namespace Bakery.Core.Contracts
         Task<IEnumerable<OrderDto>> GetAllDtosAsync();
         Task<IEnumerable<OrderDto>> GetDtosByLastnameAsync(string filterLastName);
         void Add(Order order);
+        Task<OrderWithItemsDto> GetByIdWithItemsAsync(int orderId);
     }
 }

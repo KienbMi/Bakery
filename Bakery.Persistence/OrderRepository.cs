@@ -46,5 +46,12 @@ namespace Bakery.Persistence
                     .Where(o => o.Id == orderId)
                     .Select(o => new OrderWithItemsDto(o))
                     .SingleOrDefaultAsync();
+
+        public async Task<Order> GetByIdAsync(int orderId)
+            => await _dbContext.Orders
+                        .SingleOrDefaultAsync(o => o.Id == orderId);
+
+        public void Remove(Order orderInDb)
+            => _dbContext.Orders.Remove(orderInDb);
     }
 }

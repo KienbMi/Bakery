@@ -12,5 +12,6 @@ namespace Bakery.Core.Contracts
         Task<IEnumerable<ProductDto>> GetWithFilterAsync(double priceFrom, double priceTo);
         void Add(Product product);
         Task<Product> GetByIdAsync(int productId);
+        Task<IEnumerable<Product>> GetAllAsync();
     }
 }

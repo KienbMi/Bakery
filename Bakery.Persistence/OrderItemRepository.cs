@@ -27,5 +27,8 @@ namespace Bakery.Persistence
         {
             return await _dbContext.OrderItems.CountAsync();
         }
+
+        public void Add(OrderItem orderItem)
+            => _dbContext.OrderItems.Add(orderItem);
     }
 }

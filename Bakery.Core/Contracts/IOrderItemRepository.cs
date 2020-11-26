@@ -8,5 +8,6 @@ namespace Bakery.Core.Contracts
         Task<int> GetCountAsync();
         Task<OrderItem> GetByIdAsync(int itemId);
         void Remove(OrderItem orderItem);
+        void Add(OrderItem orderItem);
     }
 }

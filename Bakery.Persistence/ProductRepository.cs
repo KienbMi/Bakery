@@ -48,5 +48,10 @@ namespace Bakery.Persistence
 
         public async Task<Product> GetByIdAsync(int productId)
             => await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == productId);
+
+        public async Task<IEnumerable<Product>> GetAllAsync()
+            => await _dbContext.Products
+                    .OrderBy(_ => _.Name)
+                    .ToArrayAsync();
     }
 }

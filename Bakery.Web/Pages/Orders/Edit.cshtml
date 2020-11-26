@@ -65,8 +65,8 @@
                     @Html.DisplayFor(_ => orderItem.Amount)
                 </td>
                 <td>
-                    <form method="post" asp-page-handler="Delete">
-                        <button class="btn btn-link" type="submit" asp-page-handler="delete" asp-route-itemId="@orderItem.Id">Entfernen</button>
+                    <form method="post">
+                        <button class="btn btn-link" type="submit" asp-page-handler="deleteItem" asp-route-itemId="@orderItem.Id">Entfernen</button>
 
                         <!-- <a asp-page-handler="delete" asp-route-itemId="@orderItem.Id">Entfernen</a> -->
                     </form>
@@ -76,11 +76,17 @@
     </tbody>
 </table>
 <h5>Bestellposition hinzufügen</h5>
-
-
+<form method="post">
+    <div>
+        <select asp-for="@Model.SelectedProductId" asp-items="@Model.Products"></select>
+        <input asp-for="@Model.Amount" />
+        <span asp-validation-for="@Model.Amount" class="text-danger"></span>
+        <button type="submit" class="btn btn-primary" asp-page-handler="AddItem" asp-route-orderId="@Model.OrderWithItems.OrderId">Hinzufügen</button>
+    </div>
+</form> 
 <hr />
 
-
+<a class="btn btn-danger" asp-page="./Delete" asp-route-orderId="@Model.OrderWithItems.OrderId">Bestellung Löschen</a> |  
 <a asp-page="../Index">Zurück</a>
 
 @section Scripts {
